@@ -13,15 +13,15 @@ This semester project involves the development of a scalable microblogging platf
 6. **Admin Section**: Enables moderation of user activities.
 
 ### Technical Specifications
-- **APIs**: Powered by OpenAPI spec-based REST APIs. Microservices architecture is preferred.
+- **APIs**: Powered by OpenAPI spec-based REST APIs. Microservices architecture has been implemented.
 - **Single Sign-On (SSO)**: Implemented using Keycloak, supporting federated sign-up (e.g., Google, Facebook, Apple).
 - **Two-Factor Authentication**: Enabled through Keycloak or similar systems.
 - **CI/CD Workflow**: Robust CI/CD practices for streamlined development and deployment.
-- **Repository**: All code is managed in a Git-based repository.
-- **Database Systems**: Both SQL and NoSQL databases are utilized.
-- **Caching System**: Employed caching mechanisms using Redis or Memcached.
-- **Queues/Streams**: Integration of queues and streams for efficient data handling.
-- **Observability Tools**: Comprehensive logs, metrics, and traces implementation.
+- **Repository**: All code is managed in this repository.
+- **Database Systems**: NoSQL database is utilized.
+- **Caching System**: Employed caching mechanisms using Redis.
+- **Queues/Streams**: Integration of queue for efficient data handling.
+- **Observability Tools**: Comprehensive logs, metrics, and traces implementation using Splunk.
 - **BI Dashboard**: A business intelligence dashboard showcasing key metrics and data.
 - **Docker Deployment**: All application components are deployable via Docker.
 
