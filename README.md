@@ -25,9 +25,15 @@ This semester project involves the development of a scalable microblogging platf
 - **BI Dashboard**: A business intelligence dashboard showcasing key metrics and data.
 - **Docker Deployment**: All application components are deployable via Docker.
 
+
+### Installations 
+- Node - (16.20.2)
+- Postgres SQL
+- Redis
+  
 ### How to Run
 - Detailed instructions on setting up and running the platform will be included here.
-
+  
 ### Team
 
 - Omkar Nagarkar
