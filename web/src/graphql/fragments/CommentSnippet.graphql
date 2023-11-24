@@ -1,0 +1,9 @@
+fragment CommentSnippet on Comment {
+  id
+  text
+  relatedPostId
+  creator {
+    id
+    username
+  }
+}

@@ -1,0 +1,6 @@
+query UserById($userId: Float!) {
+  userById(userId: $userId) {
+    id
+    username
+  }
+}
