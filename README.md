@@ -33,7 +33,22 @@ This semester project involves the development of a scalable microblogging platf
   
 ### How to Run
 - Detailed instructions on setting up and running the platform will be included here.
-  
+1. Backend
+
+- cd server
+- npm install or yarn
+- npm run watch or yarn watch
+- npm run dev or yarn dev
+
+2. Frontend
+
+- cd web
+- npm install or yarn
+- export NODE_OPTIONS=--openssl-legacy-provider  or set NODE_OPTIONS=--openssl-legacy-provider
+- npm run gen or yarn gen
+- npm run build
+- npm run dev
+ 
 ### Team
 
 - Omkar Nagarkar
