@@ -64,4 +64,5 @@ Troubleshooting:
 - For issues related to Python dependencies, ensure you are using the correct version of Python and have all the required packages installed.    
 
 ---
+
 This README provides a detailed overview of the microblogging platform project, outlining personal contributions, implemented features, technical specifications, and additional project details. It serves as a guide for understanding the project's scope, structure, and functionalities.
