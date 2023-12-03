@@ -6,5 +6,3 @@ ENV POSTGRES_DB=lireddit_cees
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
 
-# (Optional) Add initialisation scripts
-COPY ./init.sql /docker-entrypoint-initdb.d/
