@@ -1,0 +1,5 @@
+# web/src/graphql/mutations/VerifyTwoFactorToken.graphql
+
+mutation VerifyTwoFactorToken($token: String!) {
+  verifyTwoFactorToken(token: $token)
+}

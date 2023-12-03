@@ -18,6 +18,8 @@ import { validateRegister } from "../util/validateRegister";
 import { sendEmail } from "../util/sendEmail";
 import { v4 } from "uuid";
 import { getConnection } from "typeorm";
+import * as speakeasy from "speakeasy";
+import * as QRCode from "qrcode";
 
 @ObjectType()
 class FieldError {
@@ -210,6 +212,8 @@ export class UserResolver {
   async login(
     @Arg("usernameOrEmail") usernameOrEmail: string,
     @Arg("password") password: string,
+    @Arg("twoFactorToken", () => String, { nullable: true })
+    twoFactorToken: string | null,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const user = await User.findOne(
@@ -240,6 +244,26 @@ export class UserResolver {
       };
     }
 
+    // 2FA verification
+    if (user.twoFactorAuthSecret && twoFactorToken) {
+      const isTokenValid = speakeasy.totp.verify({
+        secret: user.twoFactorAuthSecret,
+        encoding: "base32",
+        token: twoFactorToken,
+      });
+
+      if (!isTokenValid) {
+        return {
+          errors: [
+            {
+              field: "twoFactorToken",
+              message: "Invalid two-factor token",
+            },
+          ],
+        };
+      }
+    }
+
     req.session.userId = user.id;
 
     return {
@@ -266,5 +290,43 @@ export class UserResolver {
   @Query(() => [User])
   users(): Promise<User[]> {
     return User.find();
+  }
+
+  @Mutation(() => String)
+  async setupTwoFactorAuth(@Ctx() { req }: MyContext): Promise<string> {
+    const user = await User.findOne(req.session.userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const secret = speakeasy.generateSecret();
+    if (!secret.otpauth_url) {
+      throw new Error("Failed to generate 2FA secret");
+    }
+
+    user.twoFactorAuthSecret = secret.base32;
+    await user.save();
+
+    const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
+    return qrCodeUrl;
+  }
+
+  @Mutation(() => Boolean)
+  async verifyTwoFactorToken(
+    @Arg("token") token: string,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    const user = await User.findOne(req.session.userId);
+    if (!user || !user.twoFactorAuthSecret) {
+      return false;
+    }
+
+    const verified = speakeasy.totp.verify({
+      secret: user.twoFactorAuthSecret,
+      encoding: "base32",
+      token,
+    });
+
+    return verified;
   }
 }
