@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   db:
     build:
@@ -9,5 +10,13 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:latest  # Use the Redis image from Docker Hub
+    ports:
+      - "6379:6379"  # Map the default Redis port on the container to the host
+    volumes:
+      - redis_data:/data 
+
 volumes:
   db_data:
+  redis_data:
