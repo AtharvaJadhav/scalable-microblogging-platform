@@ -3,14 +3,12 @@ query Posts(
   $cursor: String
   $offset: Int
   $sort: String!
-  $subredditTitle: String
 ) {
   posts(
     limit: $limit
     cursor: $cursor
     offset: $offset
     sort: $sort
-    subredditTitle: $subredditTitle
   ) {
     hasMore
     offset

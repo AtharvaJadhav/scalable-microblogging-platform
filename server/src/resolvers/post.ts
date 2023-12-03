@@ -27,8 +27,6 @@ class PostInput {
   imgUrl?: string;
   @Field()
   text: string;
-  @Field()
-  subredditTitle: string;
 }
 
 @ObjectType()
@@ -136,20 +134,8 @@ export class PostResolver {
     @Arg("sort", () => String) sort: string,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
     @Arg("offset", () => Int, { nullable: true }) offset: number | null,
-    @Arg("subredditTitle", () => String, { nullable: true })
-    subredditTitle: string | null
+
   ): Promise<PaginatedPosts> {
-    // 1. If a subreddit is provided, check if it exists
-    if (subredditTitle) {
-      let q = `
-        select 1 from subreddit where subreddit.title = $1
-      `;
-      const subredditExists = await getConnection().query(q, [subredditTitle]);
-      console.log("subredditExists:", subredditExists);
-      if (subredditExists.length === 0) {
-        throw new Error(`The subreddit r/${subredditTitle} does not exist.`);
-      }
-    }
 
     // 2. Write the monster query and return
     // 20 -> 21
@@ -167,7 +153,6 @@ export class PostResolver {
     let query = `
       select p.*
       from post p
-      ${subredditTitle ? `where p."subredditTitle" = '${subredditTitle}'` : ""}
     `;
     if (sort === "top") {
       query += `

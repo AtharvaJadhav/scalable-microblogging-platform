@@ -64,7 +64,6 @@ export const EditPost = ({}) => {
               title: data.post.title,
               imgUrl: data.post.imgUrl,
               text: data.post.text,
-              subredditTitle: data.post.subredditTitle,
             }}
             onSubmit={async (values) => {
               values["imgUrl"] = url;

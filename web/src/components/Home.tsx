@@ -22,7 +22,6 @@ import Head from "next/head";
 
 interface HomeProps {
   sort: "top" | "new";
-  subredditTitle?: string;
 }
 
 interface SortSpecificVariablesOptions {
@@ -36,19 +35,12 @@ interface VariablesOptions {
 
 const Home: React.FC<HomeProps> = ({ sort }) => {
   const router = useRouter();
-  const subredditTitle: string | undefined = router.query.title as never;
-
-  let variablesOptions: VariablesOptions = {};
-  if (subredditTitle) {
-    variablesOptions["subredditTitle"] = subredditTitle;
-  }
 
   let { data, error, loading, fetchMore, variables } = usePostsQuery({
     variables: {
       limit: 15,
       sort: sort,
-      cursor: null,
-      ...variablesOptions,
+      cursor: null
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -58,22 +50,14 @@ const Home: React.FC<HomeProps> = ({ sort }) => {
   return (
     <>
       <Head>
-        <title>{subredditTitle ? `r/${subredditTitle} | ` : ""}LiReddit</title>
+        <title>LiReddit</title>
       </Head>
 
       <Layout>
-        {data && !loading && subredditTitle && (
-          <Image
-            src={`/subreddit_pic/${subredditTitle}.png`}
-            alt={`r/${subredditTitle} header image`}
-            width="100%"
-            height="180px"
-          />
-        )}
         <Wrapper>
           <Box my={4}>
             <Heading>
-              <b>{subredditTitle ? `r/${subredditTitle}` : "Posts"}</b>
+              <b>Posts</b>
             </Heading>
           </Box>
           {data && (
@@ -86,7 +70,6 @@ const Home: React.FC<HomeProps> = ({ sort }) => {
                   onChange={(event) => {
                     const newRoute = changeSort(
                       event.target.value,
-                      subredditTitle
                     );
                     window.location.href = newRoute;
                   }}
@@ -97,14 +80,6 @@ const Home: React.FC<HomeProps> = ({ sort }) => {
                   <option value="top">Top</option>
                 </Select>
               </Box>
-              {subredditTitle && meData?.me?.id && (
-                <NextLink
-                  href="/r/[title]/create-post"
-                  as={`/r/${subredditTitle}/create-post`}
-                >
-                  <Button as={Link}>create post</Button>
-                </NextLink>
-              )}
             </Flex>
           )}
           {!data && loading ? (
@@ -117,11 +92,10 @@ const Home: React.FC<HomeProps> = ({ sort }) => {
             <Stack spacing={8}>
               {data!.posts.posts.length === 0 ? (
                 <div>
-                  {subredditTitle ? "This subreddit has no" : "There are no"}{" "}
-                  posts yet. Click{" "}
+                  There are no posts yet. Click{" "}
                   <NextLink
-                    href="/r/[title]/create-post"
-                    as={`/r/${subredditTitle}/create-post`}
+                    href="/create-post"
+                    as={`/create-post`}
                   >
                     <Link>here</Link>
                   </NextLink>{" "}
@@ -132,7 +106,6 @@ const Home: React.FC<HomeProps> = ({ sort }) => {
                   !p ? null : (
                     <PostPreview
                       p={p}
-                      subredditTitle={subredditTitle}
                       key={p.id}
                     />
                   )

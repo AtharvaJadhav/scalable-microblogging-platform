@@ -121,8 +121,6 @@ export type Post = {
   voteStatus?: Maybe<Scalars['Int']>;
   creatorId: Scalars['Float'];
   creator: User;
-  subredditTitle: Scalars['String'];
-  subreddit: Subreddit;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   textSnippet: Scalars['String'];
@@ -132,7 +130,6 @@ export type PostInput = {
   title: Scalars['String'];
   imgUrl?: Maybe<Scalars['String']>;
   text: Scalars['String'];
-  subredditTitle: Scalars['String'];
 };
 
 export type Query = {
@@ -149,7 +146,6 @@ export type Query = {
 
 
 export type QueryPostsArgs = {
-  subredditTitle?: Maybe<Scalars['String']>;
   offset?: Maybe<Scalars['Int']>;
   cursor?: Maybe<Scalars['String']>;
   sort: Scalars['String'];
@@ -174,14 +170,6 @@ export type QueryUserByIdArgs = {
 
 export type QueryCommentsArgs = {
   relatedPostId: Scalars['Float'];
-};
-
-export type Subreddit = {
-  __typename?: 'Subreddit';
-  id: Scalars['Float'];
-  title: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
 };
 
 export type User = {
@@ -216,7 +204,7 @@ export type CommentSnippetFragment = (
 
 export type PostSnippetFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'imgUrl' | 'textSnippet' | 'points' | 'voteStatus' | 'subredditTitle'>
+  & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'imgUrl' | 'textSnippet' | 'points' | 'voteStatus'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -414,7 +402,7 @@ export type PostQuery = (
   { __typename?: 'Query' }
   & { post?: Maybe<(
     { __typename?: 'Post' }
-    & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'imgUrl' | 'text' | 'points' | 'voteStatus' | 'subredditTitle'>
+    & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title' | 'imgUrl' | 'text' | 'points' | 'voteStatus'>
     & { creator: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
@@ -427,7 +415,6 @@ export type PostsQueryVariables = Exact<{
   cursor?: Maybe<Scalars['String']>;
   offset?: Maybe<Scalars['Int']>;
   sort: Scalars['String'];
-  subredditTitle?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -490,7 +477,6 @@ export const PostSnippetFragmentDoc = gql`
   textSnippet
   points
   voteStatus
-  subredditTitle
   creator {
     id
     username
@@ -973,7 +959,6 @@ export const PostDocument = gql`
     text
     points
     voteStatus
-    subredditTitle
     creator {
       id
       username
@@ -1010,14 +995,8 @@ export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
 export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
 export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
 export const PostsDocument = gql`
-    query Posts($limit: Int!, $cursor: String, $offset: Int, $sort: String!, $subredditTitle: String) {
-  posts(
-    limit: $limit
-    cursor: $cursor
-    offset: $offset
-    sort: $sort
-    subredditTitle: $subredditTitle
-  ) {
+    query Posts($limit: Int!, $cursor: String, $offset: Int, $sort: String!) {
+  posts(limit: $limit, cursor: $cursor, offset: $offset, sort: $sort) {
     hasMore
     offset
     posts {
@@ -1043,7 +1022,6 @@ export const PostsDocument = gql`
  *      cursor: // value for 'cursor'
  *      offset: // value for 'offset'
  *      sort: // value for 'sort'
- *      subredditTitle: // value for 'subredditTitle'
  *   },
  * });
  */

@@ -1,12 +1,12 @@
 import { Formik, Form } from "formik";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useCreatePostMutation } from "../../../generated/graphql";
-import { useIsAuth } from "../../../util/useIsAuth";
-import { withApollo } from "../../../util/withApollo";
-import Layout from "../../../components/Layout";
-import { Wrapper } from "../../../components/Wrapper";
-import { PostFormComponent } from "../../../components/PostFormComponent";
+import { useCreatePostMutation } from "../generated/graphql";
+import { useIsAuth } from "../util/useIsAuth";
+import { withApollo } from "../util/withApollo";
+import Layout from "../components/Layout";
+import { Wrapper } from "../components/Wrapper";
+import { PostFormComponent } from "../components/PostFormComponent";
 import Head from "next/head";
 
 export const CreatePost: React.FC<{}> = ({}) => {
@@ -32,9 +32,9 @@ export const CreatePost: React.FC<{}> = ({}) => {
               title: "",
               imgUrl: "",
               text: "",
-              subredditTitle: title,
             }}
             onSubmit={async (values) => {
+              console.log(values);
               values["imgUrl"] = url;
               const { errors } = await createPost({
                 variables: { input: values },
@@ -44,7 +44,7 @@ export const CreatePost: React.FC<{}> = ({}) => {
               });
 
               if (!errors) {
-                router.push(`/r/${title}`);
+                router.push("/");
               }
             }}
           >
