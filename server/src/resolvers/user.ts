@@ -245,7 +245,47 @@ export class UserResolver {
     }
 
     // 2FA verification
-    if (user.twoFactorAuthSecret && twoFactorToken) {
+    if (user.isTwoFactorEnabled) {
+      // If 2FA is enabled, require the twoFactorToken
+      if (!twoFactorToken) {
+        return {
+          errors: [
+            {
+              field: "twoFactorToken",
+              message: "Two-factor authentication token is required",
+            },
+          ],
+        };
+      }
+
+      if (!user.twoFactorAuthSecret) {
+        return {
+          errors: [
+            {
+              field: "twoFactorToken",
+              message: "Two-factor authentication not properly set up",
+            },
+          ],
+        };
+      }
+
+      const isTokenValid = speakeasy.totp.verify({
+        secret: user.twoFactorAuthSecret,
+        encoding: "base32",
+        token: twoFactorToken,
+      });
+
+      if (!isTokenValid) {
+        return {
+          errors: [
+            {
+              field: "twoFactorToken",
+              message: "Invalid two-factor token",
+            },
+          ],
+        };
+      }
+    } else if (user.twoFactorAuthSecret && twoFactorToken) {
       const isTokenValid = speakeasy.totp.verify({
         secret: user.twoFactorAuthSecret,
         encoding: "base32",
@@ -305,6 +345,7 @@ export class UserResolver {
     }
 
     user.twoFactorAuthSecret = secret.base32;
+    user.isTwoFactorEnabled = true;
     await user.save();
 
     const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);

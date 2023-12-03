@@ -49,4 +49,8 @@ export class User extends BaseEntity {
 
   @Column({ nullable: true })
   twoFactorAuthSecret?: string;
+
+  @Field()
+  @Column({ default: false })
+  isTwoFactorEnabled: boolean = false;
 }
