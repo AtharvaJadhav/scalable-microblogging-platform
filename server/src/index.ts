@@ -20,8 +20,6 @@ import { Updoot } from "./entities/Updoot";
 import { createUserLoader } from "./util/createUserLoader";
 import { createUpdootLoader } from "./util/createUpdootLoader";
 import { CommentResolver } from "./resolvers/comment";
-import { Subreddit } from "./entities/Subreddit";
-import { SubredditResolver } from "./resolvers/subreddit";
 
 const main = async () => {
   const conn = await createConnection({
@@ -30,7 +28,7 @@ const main = async () => {
     logging: true,
     // synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [Post, User, Updoot, Comment, Subreddit],
+    entities: [Post, User, Updoot, Comment],
   });
   await conn.runMigrations();
 
@@ -71,8 +69,7 @@ const main = async () => {
         HelloResolver,
         PostResolver,
         UserResolver,
-        CommentResolver,
-        SubredditResolver,
+        CommentResolver
       ],
       validate: false,
     }),

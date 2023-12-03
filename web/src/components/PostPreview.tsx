@@ -15,12 +15,10 @@ import UpdootSection from "./UpdootSection";
 
 interface PostPreviewProps {
   p: PostSnippetFragment;
-  subredditTitle?: string | undefined;
 }
 
 export const PostPreview: React.FC<PostPreviewProps> = ({
   p,
-  subredditTitle,
 }) => {
   return (
     <Flex p={5} shadow="md" borderWidth="1px">
@@ -36,18 +34,6 @@ export const PostPreview: React.FC<PostPreviewProps> = ({
           <NextLink href="/user/[id]" as={`/user/${p.creator.id}`}>
             <Link>{p.creator.username}</Link>
           </NextLink>
-          {!subredditTitle && (
-            <>
-              {" "}
-              in{" "}
-              {/* Not a NextLink because otherwise that doesn't invalidate the cache.
-              Not sure how to invalidate it here.
-              Consequence is a full refresh... Oh well. */}
-              <a href={`/r/${p.subredditTitle}`}>
-                <Link>r/{p.subredditTitle}</Link>
-              </a>
-            </>
-          )}
         </Text>
         <Flex align="center">
           {p.imgUrl ? (

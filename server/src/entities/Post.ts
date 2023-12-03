@@ -12,7 +12,6 @@ import {
 import { Updoot } from "./Updoot";
 import { User } from "./User";
 import { Comment } from "./Comment";
-import { Subreddit } from "./Subreddit";
 
 @ObjectType()
 @Entity()
@@ -51,18 +50,6 @@ export class Post extends BaseEntity {
     onDelete: "CASCADE",
   })
   creator: User;
-
-  // ----- RELATION TO SUBREDDIT -----
-  // POST:SUBREDDIT = N:1
-  @Field()
-  @Column()
-  subredditTitle: string;
-
-  @Field(() => Subreddit)
-  @ManyToOne(() => Subreddit, (subreddit) => subreddit.posts, {
-    onDelete: "CASCADE",
-  })
-  subreddit: Subreddit;
 
   // ---- RELATION TO UPDOOT -----
   @OneToMany(() => Updoot, (updoot) => updoot.post)

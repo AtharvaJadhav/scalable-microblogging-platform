@@ -9,13 +9,8 @@ import { useRouter } from "next/router";
 
 interface NavBarProps {}
 
-interface VariablesOptions {
-  subredditTitle?: string;
-}
-
 export const NavBar: React.FC<NavBarProps> = ({}) => {
   const router = useRouter();
-  const subredditTitle: string | undefined = "NewPost";
   const [logout, { loading: logoutFetching }] = useLogoutMutation();
   const apolloClient = useApolloClient();
   const { data, loading } = useMeQuery({ skip: isServer() });
@@ -40,7 +35,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   } else {
     body = (
       <Flex align="center">
-        <NextLink href="r/[title]/create-post" as={`r/${subredditTitle}/create-post`}>
+        <NextLink href="/create-post" as={`/create-post`}>
           <Button as={Link} mr={4}>
             Create Post
           </Button>
