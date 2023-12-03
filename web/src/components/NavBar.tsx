@@ -1,23 +1,30 @@
-import { Box, Button, Flex, Heading, Link } from "@chakra-ui/react";
 import React from "react";
+import { Box, Link, Flex, Button, Heading } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../util/isServer";
 import { useApolloClient } from "@apollo/client";
 import { DarkModeSwitch } from "./DarkModeSwitch";
+import { useRouter } from "next/router";
 
 interface NavBarProps {}
 
+interface VariablesOptions {
+  subredditTitle?: string;
+}
+
 export const NavBar: React.FC<NavBarProps> = ({}) => {
+  const router = useRouter();
+  const subredditTitle: string | undefined = "NewPost";
   const [logout, { loading: logoutFetching }] = useLogoutMutation();
   const apolloClient = useApolloClient();
   const { data, loading } = useMeQuery({ skip: isServer() });
   let body = null;
 
+  // data is loading
   if (loading) {
-    // data is loading
+    // user not logged in
   } else if (!data?.me) {
-    // you are not logged in
     body = (
       <>
         <NextLink href="/login">
@@ -29,16 +36,16 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         <DarkModeSwitch ml={4} />
       </>
     );
+    // user is logged in
   } else {
-    // you are logged in
     body = (
       <Flex align="center">
-        <NextLink href="/user/[id]" as={`/user/${data.me.id}`}>
-          <Link>
-            <Box mr={2}>{data.me.username}</Box>
-          </Link>
+        <NextLink href="r/[title]/create-post" as={`r/${subredditTitle}/create-post`}>
+          <Button as={Link} mr={4}>
+            Create Post
+          </Button>
         </NextLink>
-
+        <Box mr={2}>{data.me.username}</Box>
         <Button
           onClick={async () => {
             await logout();
@@ -47,7 +54,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
           isLoading={logoutFetching}
           variant="link"
         >
-          Log out
+          Logout
         </Button>
         <DarkModeSwitch ml={4} />
       </Flex>
