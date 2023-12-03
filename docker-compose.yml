@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  db:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  app:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
