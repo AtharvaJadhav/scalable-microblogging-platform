@@ -1,21 +1,12 @@
-version: '3.8'
+version: '3.1'
+
 services:
-  db:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.postgres
+  redis:
+    image: redis:latest  # Use the Redis image from Docker Hub
+    ports:
+      - "6379:6379"  # Map the default Redis port on the container to the host
     volumes:
-      - db_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-  app:
-    build:
-      context: .
-      dockerfile: server/Dockerfile
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
+      - redis_data:/data 
 
 volumes:
-  db_data:
+  redis_data:
