@@ -22,10 +22,18 @@ export const Login: React.FC<{}> = ({}) => {
       </Head>
       <Wrapper variant="small">
         <Formik
-          initialValues={{ usernameOrEmail: "", password: "" }}
+          initialValues={{
+            usernameOrEmail: "",
+            password: "",
+            twoFactorToken: "",
+          }}
           onSubmit={async (values, { setErrors }) => {
             const response = await login({
-              variables: values,
+              variables: {
+                usernameOrEmail: values.usernameOrEmail,
+                password: values.password,
+                twoFactorToken: values.twoFactorToken,
+              },
               update: (cache, { data }) => {
                 cache.writeQuery<MeQuery>({
                   query: MeDocument,
@@ -40,10 +48,12 @@ export const Login: React.FC<{}> = ({}) => {
             if (response.data?.login.errors) {
               setErrors(toErrorMap(response.data.login.errors));
             } else if (response.data?.login.user) {
-              if (typeof router.query.next === "string") {
-                router.push(router.query.next);
-              } else {
+              // If a twoFactorToken was provided, navigate to the home page
+              if (values.twoFactorToken) {
                 router.push("/");
+              } else {
+                // If no twoFactorToken was provided, navigate to TwoFactorSetup
+                router.push("/TwoFactorSetup");
               }
             }
           }}
@@ -63,6 +73,14 @@ export const Login: React.FC<{}> = ({}) => {
                   placeholder="password"
                   label="Password"
                   type="password"
+                />
+              </Box>
+              <Box pt={4}>
+                <InputField
+                  name="twoFactorToken"
+                  placeholder="Two-Factor Token"
+                  label="Two-Factor Token (if enabled)"
+                  type="text"
                 />
               </Box>
               <Flex mt={2}>

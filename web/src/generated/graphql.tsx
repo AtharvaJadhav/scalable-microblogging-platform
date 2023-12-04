@@ -43,6 +43,8 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  setupTwoFactorAuth: Scalars['String'];
+  verifyTwoFactorToken: Scalars['Boolean'];
   createComment: Comment;
   deleteComment: Scalars['Boolean'];
 };
@@ -89,8 +91,14 @@ export type MutationRegisterArgs = {
 
 
 export type MutationLoginArgs = {
+  twoFactorToken?: Maybe<Scalars['String']>;
   password: Scalars['String'];
   usernameOrEmail: Scalars['String'];
+};
+
+
+export type MutationVerifyTwoFactorTokenArgs = {
+  token: Scalars['String'];
 };
 
 
@@ -179,6 +187,7 @@ export type User = {
   email: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  isTwoFactorEnabled: Scalars['Boolean'];
 };
 
 export type UserResponse = {
@@ -218,7 +227,7 @@ export type RegularErrorFragment = (
 
 export type RegularUserFragment = (
   { __typename?: 'User' }
-  & Pick<User, 'id' | 'username'>
+  & Pick<User, 'id' | 'username' | 'isTwoFactorEnabled'>
 );
 
 export type RegularUserResponseFragment = (
@@ -230,6 +239,24 @@ export type RegularUserResponseFragment = (
     { __typename?: 'User' }
     & RegularUserFragment
   )> }
+);
+
+export type SetupTwoFactorAuthMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SetupTwoFactorAuthMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'setupTwoFactorAuth'>
+);
+
+export type VerifyTwoFactorTokenMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type VerifyTwoFactorTokenMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'verifyTwoFactorToken'>
 );
 
 export type ChangePasswordMutationVariables = Exact<{
@@ -306,6 +333,7 @@ export type ForgotPasswordMutation = (
 export type LoginMutationVariables = Exact<{
   usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
+  twoFactorToken?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -493,6 +521,7 @@ export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
   username
+  isTwoFactorEnabled
 }
     `;
 export const RegularUserResponseFragmentDoc = gql`
@@ -506,6 +535,67 @@ export const RegularUserResponseFragmentDoc = gql`
 }
     ${RegularErrorFragmentDoc}
 ${RegularUserFragmentDoc}`;
+export const SetupTwoFactorAuthDocument = gql`
+    mutation SetupTwoFactorAuth {
+  setupTwoFactorAuth
+}
+    `;
+export type SetupTwoFactorAuthMutationFn = Apollo.MutationFunction<SetupTwoFactorAuthMutation, SetupTwoFactorAuthMutationVariables>;
+
+/**
+ * __useSetupTwoFactorAuthMutation__
+ *
+ * To run a mutation, you first call `useSetupTwoFactorAuthMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSetupTwoFactorAuthMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [setupTwoFactorAuthMutation, { data, loading, error }] = useSetupTwoFactorAuthMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSetupTwoFactorAuthMutation(baseOptions?: Apollo.MutationHookOptions<SetupTwoFactorAuthMutation, SetupTwoFactorAuthMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SetupTwoFactorAuthMutation, SetupTwoFactorAuthMutationVariables>(SetupTwoFactorAuthDocument, options);
+      }
+export type SetupTwoFactorAuthMutationHookResult = ReturnType<typeof useSetupTwoFactorAuthMutation>;
+export type SetupTwoFactorAuthMutationResult = Apollo.MutationResult<SetupTwoFactorAuthMutation>;
+export type SetupTwoFactorAuthMutationOptions = Apollo.BaseMutationOptions<SetupTwoFactorAuthMutation, SetupTwoFactorAuthMutationVariables>;
+export const VerifyTwoFactorTokenDocument = gql`
+    mutation VerifyTwoFactorToken($token: String!) {
+  verifyTwoFactorToken(token: $token)
+}
+    `;
+export type VerifyTwoFactorTokenMutationFn = Apollo.MutationFunction<VerifyTwoFactorTokenMutation, VerifyTwoFactorTokenMutationVariables>;
+
+/**
+ * __useVerifyTwoFactorTokenMutation__
+ *
+ * To run a mutation, you first call `useVerifyTwoFactorTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVerifyTwoFactorTokenMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [verifyTwoFactorTokenMutation, { data, loading, error }] = useVerifyTwoFactorTokenMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useVerifyTwoFactorTokenMutation(baseOptions?: Apollo.MutationHookOptions<VerifyTwoFactorTokenMutation, VerifyTwoFactorTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VerifyTwoFactorTokenMutation, VerifyTwoFactorTokenMutationVariables>(VerifyTwoFactorTokenDocument, options);
+      }
+export type VerifyTwoFactorTokenMutationHookResult = ReturnType<typeof useVerifyTwoFactorTokenMutation>;
+export type VerifyTwoFactorTokenMutationResult = Apollo.MutationResult<VerifyTwoFactorTokenMutation>;
+export type VerifyTwoFactorTokenMutationOptions = Apollo.BaseMutationOptions<VerifyTwoFactorTokenMutation, VerifyTwoFactorTokenMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($token: String!, $newPassword: String!) {
   changePassword(token: $token, newPassword: $newPassword) {
@@ -705,8 +795,12 @@ export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswo
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
 export const LoginDocument = gql`
-    mutation Login($usernameOrEmail: String!, $password: String!) {
-  login(usernameOrEmail: $usernameOrEmail, password: $password) {
+    mutation Login($usernameOrEmail: String!, $password: String!, $twoFactorToken: String) {
+  login(
+    usernameOrEmail: $usernameOrEmail
+    password: $password
+    twoFactorToken: $twoFactorToken
+  ) {
     ...RegularUserResponse
   }
 }
@@ -728,6 +822,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *   variables: {
  *      usernameOrEmail: // value for 'usernameOrEmail'
  *      password: // value for 'password'
+ *      twoFactorToken: // value for 'twoFactorToken'
  *   },
  * });
  */

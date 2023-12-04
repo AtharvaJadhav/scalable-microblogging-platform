@@ -46,4 +46,11 @@ export class User extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ nullable: true })
+  twoFactorAuthSecret?: string;
+
+  @Field()
+  @Column({ default: false })
+  isTwoFactorEnabled: boolean = false;
 }

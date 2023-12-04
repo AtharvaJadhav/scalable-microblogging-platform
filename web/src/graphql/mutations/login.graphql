@@ -9,8 +9,16 @@
 #     }
 #   }
 # }
-mutation Login($usernameOrEmail: String!, $password: String!) {
-  login(usernameOrEmail: $usernameOrEmail, password: $password) {
+mutation Login(
+  $usernameOrEmail: String!
+  $password: String!
+  $twoFactorToken: String
+) {
+  login(
+    usernameOrEmail: $usernameOrEmail
+    password: $password
+    twoFactorToken: $twoFactorToken
+  ) {
     ...RegularUserResponse
   }
 }
