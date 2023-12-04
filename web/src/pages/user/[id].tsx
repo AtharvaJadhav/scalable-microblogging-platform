@@ -50,7 +50,7 @@ export const User = ({}) => {
           {userData?.userById?.username
             ? userData.userById.username + " | "
             : ""}
-          LiReddit
+          Ekko
         </title>
       </Head>
       <Layout>
@@ -81,4 +81,4 @@ export const User = ({}) => {
   );
 };
 
-export default withApollo({ ssr: true })(User);
+export default withApollo({ ssr: true })(User); 

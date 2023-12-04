@@ -19,7 +19,7 @@ export const Register: React.FC<registerProps> = ({}) => {
   return (
     <>
       <Head>
-        <title>Register | LiReddit</title>
+        <title>Register | Ekko</title>
       </Head>
       <Wrapper variant="small">
         <Formik

@@ -23,10 +23,16 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <>
         <NextLink href="/login">
-          <Link mr={4}>Login</Link>
+          <Link mr={4}>
+            <Button>Login</Button>
+
+            </Link>
+          
         </NextLink>
         <NextLink href="/register">
-          <Link>Register</Link>
+          <Link mr={4}>
+            <Button>Register</Button>
+          </Link>
         </NextLink>
         <DarkModeSwitch ml={4} />
       </>
@@ -36,21 +42,30 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <Flex align="center">
         <NextLink href="/create-post" as={`/create-post`}>
-          <Button as={Link} mr={4}>
+          <Button mr={4}>
             Create Post
           </Button>
         </NextLink>
-        <Box mr={2}>{data.me.username}</Box>
-        <Button
-          onClick={async () => {
-            await logout();
-            await apolloClient.resetStore();
-          }}
-          isLoading={logoutFetching}
-          variant="link"
-        >
-          Logout
-        </Button>
+        <Box mr={2}>
+          <NextLink href="/user/[id]" as={`/user/${data.me.id}`}>
+            <Button>
+              {data.me.username}
+            </Button>
+          </NextLink>
+        </Box>
+        <Box mr={2}>
+          <Button
+            onClick={async () => {
+              await logout();
+              await apolloClient.resetStore();
+            }}
+            isLoading={logoutFetching}
+            color="white"
+            bgColor="red"
+          >
+            Logout
+          </Button>
+        </Box>
         <DarkModeSwitch ml={4} />
       </Flex>
     );
@@ -60,14 +75,14 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
       zIndex={1}
       position="sticky"
       top={0}
-      bg="tomato"
+      bg="blue"
       py={4}
       align="center"
     >
-      <Flex maxW={800} align="center" flex={1} px={4} m="auto">
+      <Flex maxW={1500} align="center" flex={1} px={4} m="auto">
         <NextLink href="/">
           <Link>
-            <Heading>LiReddit</Heading>
+            <Heading>Ekko</Heading>
           </Link>
         </NextLink>
         <Box ml="auto">{body}</Box>

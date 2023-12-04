@@ -8,7 +8,7 @@ function MyApp({ Component, pageProps }: any) {
   return (
     <ChakraProvider resetCSS theme={theme}>
       <Head>
-        <title>LiReddit</title>
+        <title>Ekko</title>
       </Head>
       <ColorModeProvider
         options={{

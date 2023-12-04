@@ -55,7 +55,7 @@ export const EditPost = ({}) => {
   return (
     <>
       <Head>
-        <title>Edit Post | LiReddit</title>
+        <title>Edit Post | Ekko</title>
       </Head>
       <Layout>
         <Wrapper variant="small">
