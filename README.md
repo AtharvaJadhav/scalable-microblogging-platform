@@ -2,15 +2,12 @@
 
 ## Project Overview
 
-This semester project involves the development of a scalable microblogging platform leveraging cloud-native architecture. The platform, akin to Twitter, allows users to create, edit, delete, and view posts up to 280 characters with image support. It includes robust user interaction features such as following other users, managing profiles, and an administrative section for user moderation.
+This semester project involves the development of a scalable microblogging platform leveraging cloud-native architecture. The platform, akin to Reddit, allows users to create, edit, delete, and view posts with image support.
 
 ### Official Features Implemented
 1. **User Management**: Includes user sign-ups, sign-in, and password recovery workflows.
-2. **Content Posting**: Allows posting, editing, and deleting of 280-character posts with image support.
-3. **Social Interaction**: Users can follow each other.
-4. **Feed View**: Displays posts from followed users in chronological order.
-5. **Profile Management**: A dedicated section for users to manage their profiles.
-6. **Admin Section**: Enables moderation of user activities.
+2. **Content Posting**: Allows posting, editing, and deleting of long posts with image support.
+3. **Feed View**: Displays posts from users in chronological order or top sorted order.
 
 ### Technical Specifications
 - **APIs**: Powered by OpenAPI spec-based REST APIs. Microservices architecture has been implemented.
@@ -18,7 +15,7 @@ This semester project involves the development of a scalable microblogging platf
 - **Two-Factor Authentication**: Enabled through Keycloak or similar systems.
 - **CI/CD Workflow**: Robust CI/CD practices for streamlined development and deployment.
 - **Repository**: All code is managed in this repository.
-- **Database Systems**: NoSQL database is utilized.
+- **Database Systems**: NoSQL database is used.
 - **Caching System**: Employed caching mechanisms using Redis.
 - **Queues/Streams**: Integration of queue for efficient data handling.
 - **Observability Tools**: Comprehensive logs, metrics, and traces implementation using Splunk.
@@ -67,7 +64,3 @@ This semester project involves the development of a scalable microblogging platf
 Troubleshooting:     
 - If you encounter any issues with the Docker setup, ensure Docker is running correctly on your system and you have the necessary permissions.     
 - For issues related to Python dependencies, ensure you are using the correct version of Python and have all the required packages installed.    
-
----
-
-This README provides a detailed overview of the microblogging platform project, outlining personal contributions, implemented features, technical specifications, and additional project details. It serves as a guide for understanding the project's scope, structure, and functionalities.
