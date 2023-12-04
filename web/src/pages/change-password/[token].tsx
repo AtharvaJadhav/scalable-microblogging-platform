@@ -24,7 +24,7 @@ const ChangePassword: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Change Password | LiReddit</title>
+        <title>Change Password | Ekko</title>
       </Head>
       <Wrapper variant="small">
         <Formik

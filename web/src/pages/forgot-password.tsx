@@ -15,7 +15,7 @@ const ForgotPassword: React.FC<{}> = ({}) => {
   return (
     <>
       <Head>
-        <title>LiReddit</title>
+        <title>Ekko</title>
       </Head>
       <Wrapper variant="small">
         <Formik
