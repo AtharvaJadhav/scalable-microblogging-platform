@@ -129,7 +129,7 @@ export const Post = ({}) => {
           </>
         )}
         {data2 && !loading2 && data2.comments.length === 0 && (
-          <Box>There are no comments yet</Box>
+          <Box>There are no comments yet.</Box>
         )}
         {data2 &&
           !loading2 &&

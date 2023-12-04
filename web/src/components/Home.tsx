@@ -50,7 +50,7 @@ const Home: React.FC<HomeProps> = ({ sort }) => {
   return (
     <>
       <Head>
-        <title>LiReddit</title>
+        <title>Ekko</title>
       </Head>
 
       <Layout>

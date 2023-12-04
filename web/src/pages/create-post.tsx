@@ -23,7 +23,7 @@ export const CreatePost: React.FC<{}> = ({}) => {
   return (
     <>
       <Head>
-        <title>Create Post | LiReddit</title>
+        <title>Create Post | Ekko</title>
       </Head>
       <Layout>
         <Wrapper variant="small">

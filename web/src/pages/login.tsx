@@ -18,7 +18,7 @@ export const Login: React.FC<{}> = ({}) => {
   return (
     <>
       <Head>
-        <title>Login | LiReddit</title>
+        <title>Login | Ekko</title>
       </Head>
       <Wrapper variant="small">
         <Formik
