@@ -32,6 +32,12 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type GoogleRegisterInput = {
+  token: Scalars['String'];
+  email: Scalars['String'];
+  username: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   vote: Scalars['Boolean'];
@@ -45,6 +51,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   setupTwoFactorAuth: Scalars['String'];
   verifyTwoFactorToken: Scalars['Boolean'];
+  registerWithGoogle: UserResponse;
   createComment: Comment;
   deleteComment: Scalars['Boolean'];
 };
@@ -99,6 +106,11 @@ export type MutationLoginArgs = {
 
 export type MutationVerifyTwoFactorTokenArgs = {
   token: Scalars['String'];
+};
+
+
+export type MutationRegisterWithGoogleArgs = {
+  options: GoogleRegisterInput;
 };
 
 
@@ -361,6 +373,19 @@ export type RegisterMutationVariables = Exact<{
 export type RegisterMutation = (
   { __typename?: 'Mutation' }
   & { register: (
+    { __typename?: 'UserResponse' }
+    & RegularUserResponseFragment
+  ) }
+);
+
+export type RegisterWithGoogleMutationVariables = Exact<{
+  options: GoogleRegisterInput;
+}>;
+
+
+export type RegisterWithGoogleMutation = (
+  { __typename?: 'Mutation' }
+  & { registerWithGoogle: (
     { __typename?: 'UserResponse' }
     & RegularUserResponseFragment
   ) }
@@ -896,6 +921,39 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const RegisterWithGoogleDocument = gql`
+    mutation RegisterWithGoogle($options: GoogleRegisterInput!) {
+  registerWithGoogle(options: $options) {
+    ...RegularUserResponse
+  }
+}
+    ${RegularUserResponseFragmentDoc}`;
+export type RegisterWithGoogleMutationFn = Apollo.MutationFunction<RegisterWithGoogleMutation, RegisterWithGoogleMutationVariables>;
+
+/**
+ * __useRegisterWithGoogleMutation__
+ *
+ * To run a mutation, you first call `useRegisterWithGoogleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterWithGoogleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerWithGoogleMutation, { data, loading, error }] = useRegisterWithGoogleMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useRegisterWithGoogleMutation(baseOptions?: Apollo.MutationHookOptions<RegisterWithGoogleMutation, RegisterWithGoogleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterWithGoogleMutation, RegisterWithGoogleMutationVariables>(RegisterWithGoogleDocument, options);
+      }
+export type RegisterWithGoogleMutationHookResult = ReturnType<typeof useRegisterWithGoogleMutation>;
+export type RegisterWithGoogleMutationResult = Apollo.MutationResult<RegisterWithGoogleMutation>;
+export type RegisterWithGoogleMutationOptions = Apollo.BaseMutationOptions<RegisterWithGoogleMutation, RegisterWithGoogleMutationVariables>;
 export const UpdatePostDocument = gql`
     mutation UpdatePost($id: Int!, $title: String!, $imgUrl: String, $text: String!) {
   updatePost(id: $id, title: $title, imgUrl: $imgUrl, text: $text) {

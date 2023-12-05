@@ -20,6 +20,8 @@ import { v4 } from "uuid";
 import { getConnection } from "typeorm";
 import * as speakeasy from "speakeasy";
 import * as QRCode from "qrcode";
+import { GoogleRegisterInput } from "./GoogleRegisterInput";
+import { verifyGoogleToken } from "../util/verifyGoogleToken";
 
 @ObjectType()
 class FieldError {
@@ -369,5 +371,47 @@ export class UserResolver {
     });
 
     return verified;
+  }
+
+  @Mutation(() => UserResponse)
+  async registerWithGoogle(
+    @Arg("options") options: GoogleRegisterInput,
+    @Ctx() { req }: MyContext
+  ): Promise<UserResponse> {
+    const googleUser = await verifyGoogleToken(options.token);
+    if (!googleUser) {
+      console.log("1")
+      return {
+        errors: [{ field: "token", message: "Invalid Google token" }],
+      };
+    }
+
+    const user = await User.findOne({ where: { email: options.email } });
+    if (user) {
+      console.log("2")
+      // User already exists, return an error
+      return {
+        errors: [
+          {
+            field: "email",
+            message: "A user with that email already exists",
+          },
+        ],
+      };
+    }
+
+    // Hash the Google UID as the password
+    const hashedPassword = await bcrypt.hash(googleUser.uid, 10);
+    const newUser = User.create({
+      username: options.username,
+      email: options.email,
+      password: hashedPassword,
+    });
+    await newUser.save();
+
+    // Set user session
+    req.session.userId = newUser.id;
+
+    return { user: newUser };
   }
 }
