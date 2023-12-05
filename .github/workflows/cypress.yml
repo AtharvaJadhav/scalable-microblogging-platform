@@ -19,7 +19,7 @@ jobs:
           node-version: 16
 
       - name: Print Current Directory
-        run: pwd  # This will print the current directory
+        run: cd ..\web  # This will print the current directory
 
       - name: Install dependencies
         run: npm install
