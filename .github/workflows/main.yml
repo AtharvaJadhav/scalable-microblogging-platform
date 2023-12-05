@@ -27,8 +27,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install server dependencies
-        run: npm install
+      - name: Set up server directory
+        run: |
+          cd ./server
+          npm install
         working-directory: ./server
 
   web-build-and-test:
@@ -36,8 +38,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install web dependencies
-        run: npm install
+      - name: Set up web directory
+        run: |
+          cd ./web
+          npm install
         working-directory: ./web
 
   Jest_test:
