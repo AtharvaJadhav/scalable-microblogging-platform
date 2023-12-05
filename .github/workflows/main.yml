@@ -37,12 +37,3 @@ jobs:
       - name: Install web dependencies
         run: npm install
         working-directory: ./web
-
-  Jest_test:
-    needs: [server-build-and-test, web-build-and-test]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Run tests
-        run: npm test
-        working-directory: ./server
