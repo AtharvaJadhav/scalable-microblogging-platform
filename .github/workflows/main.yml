@@ -6,42 +6,36 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  NODE_VERSION: '16'
-
 jobs:
-  setup:
+  server-build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '16' # specify the Node.js version for the server
 
-  server-build-and-test:
-    needs: setup
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set up server directory
-        run: |
-          cd ./server
-          npm install
+      - name: Install server dependencies
+        run: npm install
         working-directory: ./server
 
   web-build-and-test:
-    needs: setup
+    needs: server-build-and-test
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set up web directory
-        run: |
-          cd ./web
-          npm install
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install web dependencies
+        run: npm install
         working-directory: ./web
 
   Jest_test:
