@@ -3,7 +3,7 @@ name: Jest Test
 on:
   push:
     branches:
-      - main
+      - CI_CD
 
 jobs:
   jest-tests:
