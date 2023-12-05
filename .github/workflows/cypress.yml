@@ -19,7 +19,7 @@ jobs:
           node-version: 16
 
       - name: Set working directory
-        run: cd $GITHUB_WORKSPACE/web
+        run: cd web
 
       - name: Install dependencies
         run: npm install
