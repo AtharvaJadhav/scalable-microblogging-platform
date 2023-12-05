@@ -2,61 +2,49 @@ name: CI/CD Pipeline Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
+
+env:
+  NODE_VERSION: '16'
 
 jobs:
-  server-build-and-test:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16' # specify the Node.js version for the server
-
-    - name: Install server dependencies
-      run: npm install
-      working-directory: ./server
-
-  web-build-and-test:
-    needs: server-build-and-test
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
-
-    - name: Install web dependencies
-      run: npm install
-      working-directory: ./web
-
-jobs:
-  Jest_test:
-    needs: web-build-and-test
+  setup:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install dependencies
-        run: npm install 
+  server-build-and-test:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install server dependencies
+        run: npm install
         working-directory: ./server
 
+  web-build-and-test:
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install web dependencies
+        run: npm install
+        working-directory: ./web
+
+  Jest_test:
+    needs: [server-build-and-test, web-build-and-test]
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Run tests
         run: npm test
-
-
+        working-directory: ./server
