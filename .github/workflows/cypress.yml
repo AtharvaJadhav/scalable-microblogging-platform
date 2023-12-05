@@ -18,6 +18,10 @@ jobs:
         with:
           node-version: 14
 
+      - name: Set working directory
+        run: cd scalable-microblogging-platform\web
+        working-directory: scalable-microblogging-platform\web
+
       - name: Install dependencies
         run: npm install
 
