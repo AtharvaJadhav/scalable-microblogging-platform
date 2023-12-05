@@ -20,7 +20,7 @@ jobs:
 
       - name: Set working directory
         run: cd web
-        working-directory: web
+        working-directory: ./web
 
       - name: Install dependencies
         run: npm install
