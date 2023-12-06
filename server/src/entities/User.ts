@@ -53,4 +53,8 @@ export class User extends BaseEntity {
   @Field()
   @Column({ default: false })
   isTwoFactorEnabled: boolean = false;
+
+  @Field()
+  @Column("bool", { default: false })
+  isGoogleUser: boolean;
 }

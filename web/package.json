@@ -15,6 +15,7 @@
     "@urql/core": "^2.1.5",
     "@urql/exchange-graphcache": "^4.2.1",
     "cloudinary-react": "^1.7.0",
+    "firebase": "^10.7.0",
     "formik": "^2.2.9",
     "framer-motion": "^4.0.3",
     "graphql": "^15.5.1",

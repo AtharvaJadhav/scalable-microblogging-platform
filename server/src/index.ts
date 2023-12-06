@@ -1,3 +1,4 @@
+import './firebaseAdmin';
 import "reflect-metadata";
 import "dotenv-safe/config";
 import { __prod__, COOKIE_NAME } from "./constants";

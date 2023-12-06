@@ -20,6 +20,8 @@ import { v4 } from "uuid";
 import { getConnection } from "typeorm";
 import * as speakeasy from "speakeasy";
 import * as QRCode from "qrcode";
+import { GoogleRegisterInput } from "./GoogleRegisterInput";
+import { verifyGoogleToken } from "../util/verifyGoogleToken";
 
 @ObjectType()
 class FieldError {
@@ -210,12 +212,40 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("usernameOrEmail") usernameOrEmail: string,
-    @Arg("password") password: string,
-    @Arg("twoFactorToken", () => String, { nullable: true })
-    twoFactorToken: string | null,
+    @Arg("usernameOrEmail", () => String, { nullable: true }) usernameOrEmail: string | null,
+  @Arg("password", () => String, { nullable: true }) password: string | null,
+  @Arg("twoFactorToken", () => String, { nullable: true }) twoFactorToken: string | null,
+  @Arg("googleToken", () => String, { nullable: true }) googleToken: string | null,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
+
+    if (googleToken) {
+      const googleUser = await verifyGoogleToken(googleToken);
+      if (!googleUser) {
+        return {
+          errors: [{ field: "googleToken", message: "Invalid Google token" }],
+        };
+      }
+
+      const user = await User.findOne({ where: { email: googleUser.email } });
+    if (!user) {
+      return {
+        errors: [{ field: "email", message: "User not found" }],
+      };
+    }
+
+    // Check if the user is a Google user
+    if (!user.isGoogleUser) {
+      return {
+        errors: [{ field: "googleToken", message: "Please login with username and password" }],
+      };
+    }
+
+    req.session.userId = user.id;
+    return { user };
+  }
+
+  if (usernameOrEmail && password) {
     const user = await User.findOne(
       usernameOrEmail.includes("@")
         ? { where: { email: usernameOrEmail } }
@@ -229,6 +259,12 @@ export class UserResolver {
             message: "that username doesn't exist",
           },
         ],
+      };
+    }
+
+    if (user.isGoogleUser) {
+      return {
+        errors: [{ field: "usernameOrEmail", message: "Please login with Google" }],
       };
     }
 
@@ -311,6 +347,16 @@ export class UserResolver {
     };
   }
 
+    return {
+      errors: [
+        {
+          field: "general",
+          message: "Invalid login request",
+        },
+      ],
+    };
+  }
+
   @Mutation(() => Boolean)
   logout(@Ctx() { req, res }: MyContext) {
     return new Promise((resolve) =>
@@ -369,5 +415,48 @@ export class UserResolver {
     });
 
     return verified;
+  }
+
+  @Mutation(() => UserResponse)
+  async registerWithGoogle(
+    @Arg("options") options: GoogleRegisterInput,
+    @Ctx() { req }: MyContext
+  ): Promise<UserResponse> {
+    const googleUser = await verifyGoogleToken(options.token);
+    if (!googleUser) {
+      console.log("1")
+      return {
+        errors: [{ field: "token", message: "Invalid Google token" }],
+      };
+    }
+
+    const user = await User.findOne({ where: { email: options.email } });
+    if (user) {
+      console.log("2")
+      // User already exists, return an error
+      return {
+        errors: [
+          {
+            field: "email",
+            message: "A user with that email already exists",
+          },
+        ],
+      };
+    }
+
+    // Hash the Google UID as the password
+    const hashedPassword = await bcrypt.hash(googleUser.uid, 10);
+    const newUser = User.create({
+      username: options.username,
+      email: options.email,
+      password: hashedPassword,
+      isGoogleUser: true,
+    });
+    await newUser.save();
+
+    // Set user session
+    req.session.userId = newUser.id;
+
+    return { user: newUser };
   }
 }
