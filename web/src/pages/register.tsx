@@ -58,7 +58,7 @@ export const Register: React.FC<registerProps> = ({}) => {
         });
       } else {
         // User registered successfully
-        router.push("/TwoFactorSetup");
+        router.push("/");
       }
     } catch (error) {
       // Handle Errors here
