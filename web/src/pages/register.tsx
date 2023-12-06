@@ -71,7 +71,7 @@ export const Register: React.FC<registerProps> = ({}) => {
                     name="email"
                     placeholder="email"
                     label="Email"
-                    type="text" // Corrected type from "fuckoff" to "text"
+                    type="text"
                   />
                 </Box>
                 <Box pt={4}>
