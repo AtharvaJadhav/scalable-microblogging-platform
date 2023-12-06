@@ -59,6 +59,9 @@ export const Register: React.FC<registerProps> = ({}) => {
       } else {
         // User registered successfully
         router.push("/");
+        setTimeout(() => {
+          router.reload();
+        }, 10);
       }
     } catch (error) {
       // Handle Errors here

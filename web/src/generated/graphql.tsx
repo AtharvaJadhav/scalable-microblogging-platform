@@ -98,9 +98,10 @@ export type MutationRegisterArgs = {
 
 
 export type MutationLoginArgs = {
+  googleToken?: Maybe<Scalars['String']>;
   twoFactorToken?: Maybe<Scalars['String']>;
-  password: Scalars['String'];
-  usernameOrEmail: Scalars['String'];
+  password?: Maybe<Scalars['String']>;
+  usernameOrEmail?: Maybe<Scalars['String']>;
 };
 
 
@@ -200,6 +201,7 @@ export type User = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   isTwoFactorEnabled: Scalars['Boolean'];
+  isGoogleUser: Scalars['Boolean'];
 };
 
 export type UserResponse = {
@@ -343,9 +345,10 @@ export type ForgotPasswordMutation = (
 );
 
 export type LoginMutationVariables = Exact<{
-  usernameOrEmail: Scalars['String'];
-  password: Scalars['String'];
+  usernameOrEmail?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
   twoFactorToken?: Maybe<Scalars['String']>;
+  googleToken?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -820,11 +823,12 @@ export type ForgotPasswordMutationHookResult = ReturnType<typeof useForgotPasswo
 export type ForgotPasswordMutationResult = Apollo.MutationResult<ForgotPasswordMutation>;
 export type ForgotPasswordMutationOptions = Apollo.BaseMutationOptions<ForgotPasswordMutation, ForgotPasswordMutationVariables>;
 export const LoginDocument = gql`
-    mutation Login($usernameOrEmail: String!, $password: String!, $twoFactorToken: String) {
+    mutation Login($usernameOrEmail: String, $password: String, $twoFactorToken: String, $googleToken: String) {
   login(
     usernameOrEmail: $usernameOrEmail
     password: $password
     twoFactorToken: $twoFactorToken
+    googleToken: $googleToken
   ) {
     ...RegularUserResponse
   }
@@ -848,6 +852,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  *      usernameOrEmail: // value for 'usernameOrEmail'
  *      password: // value for 'password'
  *      twoFactorToken: // value for 'twoFactorToken'
+ *      googleToken: // value for 'googleToken'
  *   },
  * });
  */
