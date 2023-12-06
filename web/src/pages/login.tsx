@@ -16,7 +16,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 export const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
-  const [login, lfetching] = useLoginMutation();
+  const [login ] = useLoginMutation();
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();

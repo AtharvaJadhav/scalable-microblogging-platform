@@ -15,14 +15,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   const apolloClient = useApolloClient();
   const { data, loading } = useMeQuery({ skip: isServer() });
   let body = null;
-  console.log("Data ", data)
 
   // data is loading
   if (loading) {
     // user not logged in
   } else if (!data?.me) {
-    // console.log("In 222")
-    // console.log(data)
     body = (
       <>
         <NextLink href="/login">
@@ -40,8 +37,6 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     );
     // user is logged in
   } else {
-    // console.log("In 333")
-    // console.log(data)
     body = (
       <Flex align="center">
         <NextLink href="/create-post" as={`/create-post`}>
