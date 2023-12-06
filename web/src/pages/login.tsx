@@ -21,6 +21,7 @@ export const Login: React.FC<{}> = ({}) => {
         <title>Login | Ekko</title>
       </Head>
       <Wrapper variant="small">
+      <Flex align="center" justify="center" minH="100vh">
         <Formik
           initialValues={{
             usernameOrEmail: "",
@@ -60,6 +61,15 @@ export const Login: React.FC<{}> = ({}) => {
         >
           {({ isSubmitting }) => (
             <Form>
+              <Box
+                width="400px"
+                mx="auto"
+                mt={8}
+                p={6}
+                borderWidth="1px"
+                borderRadius="lg"
+                boxShadow="lg"
+              >
               <Box pt={4}>
                 <InputField
                   name="usernameOrEmail"
@@ -79,7 +89,7 @@ export const Login: React.FC<{}> = ({}) => {
                 <InputField
                   name="twoFactorToken"
                   placeholder="Two-Factor Token"
-                  label="Two-Factor Token (if enabled)"
+                  label="Two-Factor Token"
                   type="text"
                 />
               </Box>
@@ -96,9 +106,11 @@ export const Login: React.FC<{}> = ({}) => {
               >
                 Log in
               </Button>
+              </Box>
             </Form>
           )}
         </Formik>
+        </Flex>
       </Wrapper>
     </>
   );

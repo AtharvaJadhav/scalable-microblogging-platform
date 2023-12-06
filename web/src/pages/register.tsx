@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { withApollo } from "../util/withApollo";
 import { withUrqlClient } from "next-urql";
@@ -22,6 +22,7 @@ export const Register: React.FC<registerProps> = ({}) => {
         <title>Register | Ekko</title>
       </Head>
       <Wrapper variant="small">
+      <Flex align="center" justify="center" minH="100vh">
         <Formik
           initialValues={{ email: "", username: "", password: "" }}
           onSubmit={async (values, { setErrors }) => {
@@ -40,47 +41,59 @@ export const Register: React.FC<registerProps> = ({}) => {
             if (response.data?.register.errors) {
               setErrors(toErrorMap(response.data.register.errors));
             } else if (response.data?.register.user) {
+              console.log("Registered User - ", response.data?.register.user);
               // worked
-              router.push("/");
+              router.push("/TwoFactorSetup");
             }
           }}
         >
           {({ isSubmitting }) => (
             <Form>
-              <Box pt={4}>
-                <InputField
-                  name="username"
-                  placeholder="username"
-                  label="Username"
-                />
-              </Box>
-              <Box pt={4}>
-                <InputField
-                  name="email"
-                  placeholder="email"
-                  label="Email"
-                  type="fuckoff"
-                />
-              </Box>
-              <Box pt={4}>
-                <InputField
-                  name="password"
-                  placeholder="password"
-                  label="Password"
-                  type="password"
-                />
-              </Box>
-              <Button
-                mt={4}
-                type="submit"
-                colorScheme="teal"
-                isLoading={isSubmitting}
+              <Box
+                width="400px"
+                mx="auto"
+                mt={8}
+                p={6}
+                borderWidth="1px"
+                borderRadius="lg"
+                boxShadow="lg"
               >
-                register
-              </Button>
+                <Box pt={4}>
+                  <InputField
+                    name="username"
+                    placeholder="username"
+                    label="Username"
+                  />
+                </Box>
+                <Box pt={4}>
+                  <InputField
+                    name="email"
+                    placeholder="email"
+                    label="Email"
+                    type="text" // Corrected type from "fuckoff" to "text"
+                  />
+                </Box>
+                <Box pt={4}>
+                  <InputField
+                    name="password"
+                    placeholder="password"
+                    label="Password"
+                    type="password"
+                  />
+                </Box>
+                <Button
+                  mt={4}
+                  type="submit"
+                  colorScheme="teal"
+                  isLoading={isSubmitting}
+                >
+                  Register
+                </Button>
+              </Box>
             </Form>
           )}
         </Formik>
+        </Flex>
       </Wrapper>
     </>
   );
