@@ -1,0 +1,11 @@
+input GoogleRegisterInput {
+  token: String!
+  email: String!
+  username: String!
+}
+
+mutation RegisterWithGoogle($options: GoogleRegisterInput!) {
+  registerWithGoogle(options: $options) {
+    ...RegularUserResponse
+  }
+}
