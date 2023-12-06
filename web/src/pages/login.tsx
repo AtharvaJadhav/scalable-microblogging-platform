@@ -11,17 +11,18 @@ import { createUrqlClient } from "../util/createUrqlClient";
 import NextLink from "next/link";
 import { withApollo } from "../util/withApollo";
 import Head from "next/head";
+import { Layout } from "../components/Layout";
 
 export const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
   const [login] = useLoginMutation();
   return (
-    <>
+    <Layout>
       <Head>
         <title>Login | Ekko</title>
       </Head>
       <Wrapper variant="small">
-      <Flex align="center" justify="center" minH="100vh">
+      <Flex align="center" justify="center" minH="50vh">
         <Formik
           initialValues={{
             usernameOrEmail: "",
@@ -112,7 +113,7 @@ export const Login: React.FC<{}> = ({}) => {
         </Formik>
         </Flex>
       </Wrapper>
-    </>
+    </Layout>
   );
 };
 
