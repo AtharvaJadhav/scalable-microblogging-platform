@@ -23,9 +23,9 @@ const PhotosUploaderContainer: React.FC<PhotosUploaderContainerProps> = ({
     e.preventDefault();
     const data = new FormData();
     data.append("file", image);
-    data.append("upload_preset", "kms5hyfg");
-    data.append("cloud_name", "ceesjol");
-    fetch("https://api.cloudinary.com/v1_1/ceesjol/image/upload", {
+    data.append("upload_preset", "srfn4ier");
+    data.append("cloud_name", "dwrotudo9");
+    fetch("https://api.cloudinary.com/v1_1/dwrotudo9/image/upload", {
       method: "post",
       body: data,
     })

@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }: any) {
       </Head>
       <ColorModeProvider
         options={{
-          useSystemColorMode: true,
+          useSystemColorMode: false,
         }}
       >
         <Container>

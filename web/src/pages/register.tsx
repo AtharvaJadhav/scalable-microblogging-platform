@@ -15,6 +15,8 @@ import {
 } from "../generated/graphql";
 import { toErrorMap } from "../util/toErrorMap";
 import Head from "next/head";
+import { Layout } from "../components/Layout";
+
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 interface registerProps {}
 
@@ -70,12 +72,12 @@ export const Register: React.FC<registerProps> = ({}) => {
   };
 
   return (
-    <>
+    <Layout>
       <Head>
         <title>Register | Ekko</title>
       </Head>
       <Wrapper variant="small">
-        <Flex align="center" justify="center" minH="100vh">
+        <Flex align="center" justify="center" minH="50vh">
           <Formik
             initialValues={{ email: "", username: "", password: "" }}
             onSubmit={async (values, { setErrors }) => {
@@ -156,7 +158,7 @@ export const Register: React.FC<registerProps> = ({}) => {
           </Formik>
         </Flex>
       </Wrapper>
-    </>
+    </Layout>
   );
 };
 

@@ -4,6 +4,9 @@ import { Flex, IconButton } from "@chakra-ui/react";
 import gql from "graphql-tag";
 import { withApollo } from "../util/withApollo";
 import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { useToast } from "@chakra-ui/react";
+
 import {
   PostSnippetFragment,
   useVoteMutation,
@@ -54,6 +57,8 @@ const updateAfterVote = (
 };
 
 export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
+  const route = useRouter();
+  const toast = useToast();
   const [loadingState, setLoadingState] = useState<
     "updoot-loading" | "downdoot-loading" | "not-loading"
   >("not-loading");
@@ -72,6 +77,17 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
               value: 1,
             },
             update: (cache) => updateAfterVote(1, post.id, cache),
+          }).catch((err) => {
+            console.log(err)
+            toast({
+              title: "Error",
+              description: "You must be logged in to vote",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
+            route.push("/login");
           });
           setLoadingState("not-loading");
         }}
@@ -93,6 +109,17 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
               value: -1,
             },
             update: (cache) => updateAfterVote(-1, post.id, cache),
+          }).catch((err) => {
+            console.log(err)
+            toast({
+              title: "Error",
+              description: "You must be logged in to vote",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+              position: "top",
+            });
+            route.push("/login")
           });
           setLoadingState("not-loading");
         }}
@@ -105,4 +132,4 @@ export const UpdootSection: React.FC<UpdootSectionProps> = ({ post }) => {
   );
 };
 
-export default UpdootSection;
+export default withApollo({ssr:false})(UpdootSection);
