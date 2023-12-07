@@ -20,8 +20,8 @@ jobs:
         tags: latest
         registry: docker.io
         dockerfile: ./server/Dockerfile
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: purvil1699
+        password: D@mkp@1699
 
   build-and-push-frontend:
     runs-on: ubuntu-latest
@@ -37,5 +37,5 @@ jobs:
         tags: latest
         registry: docker.io
         dockerfile: ./web/Dockerfile
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        username: purvil1699
+        password: D@mkp@1699
