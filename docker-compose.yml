@@ -2,20 +2,22 @@ version: '3.8'
 
 services:
   db:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: lireddit_cees
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
   redis:
-    image: redis:latest  # Use the Redis image from Docker Hub
+    image: redis:latest
     ports:
-      - "6379:6379"  # Map the default Redis port on the container to the host
+      - "6379:6379"
     volumes:
-      - redis_data:/data 
+      - redis_data:/data
 
 volumes:
   db_data:
