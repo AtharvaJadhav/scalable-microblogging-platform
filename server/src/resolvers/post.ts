@@ -18,6 +18,7 @@ import { isAuth } from "../middleware/isAuth";
 import { getConnection } from "typeorm";
 import { Updoot } from "../entities/Updoot";
 import { User } from "../entities/User";
+import logger from '../logger';
 
 @InputType()
 class PostInput {
@@ -129,27 +130,25 @@ export class PostResolver {
   }
 
   @Query(() => PaginatedPosts)
-  async posts(
-    @Arg("limit", () => Int) limit: number,
-    @Arg("sort", () => String) sort: string,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
-    @Arg("offset", () => Int, { nullable: true }) offset: number | null,
+async posts(
+  @Arg("limit", () => Int) limit: number,
+  @Arg("sort", () => String) sort: string,
+  @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+  @Arg("offset", () => Int, { nullable: true }) offset: number | null,
+): Promise<PaginatedPosts> {
 
-  ): Promise<PaginatedPosts> {
+  const realLimit = Math.min(50, limit);
+  const realLimitPlusOne = realLimit + 1;
 
-    // 2. Write the monster query and return
-    // 20 -> 21
-    const realLimit = Math.min(50, limit);
-    const realLimitPlusOne = realLimit + 1;
+  const replacements: any[] = [realLimitPlusOne];
 
-    const replacements: any[] = [realLimitPlusOne];
+  if (sort === "top") {
+    replacements.push(offset);
+  } else if (cursor) {
+    replacements.push(new Date(parseInt(cursor!)));
+  }
 
-    if (sort === "top") {
-      replacements.push(offset);
-    } else if (cursor) {
-      replacements.push(new Date(parseInt(cursor!)));
-    }
-
+  try {
     let query = `
       select p.*
       from post p
@@ -169,36 +168,25 @@ export class PostResolver {
     }
     const posts = await getConnection().query(query, replacements);
 
+    logger.info(`Retrieved posts with sort: ${sort}, limit: ${limit}, cursor: ${cursor}, offset: ${offset}`);
     return {
       posts: posts.slice(0, realLimit),
       hasMore: posts.length === realLimitPlusOne,
       offset: offset || 0,
     };
-
-    // 3. Old stuff
-    // const qb = getConnection()
-    //   .getRepository(Post)
-    //   .createQueryBuilder("p")
-    //   .innerJoinAndSelect("p.creator", "u", 'u.id = p."creatorId"')
-    //   .orderBy('p."createdAt"', "DESC")
-    //   .take(realLimitPlusOne);
-
-    // if (cursor) {
-    //   qb.where('p."createdAt" < :cursor', {
-    //     cursor: new Date(parseInt(cursor)),
-    //   });
-    // }
-
-    // const posts = await qb.getMany();
-    // console.log("posts: ", posts);
+  } catch (error) {
+    logger.error(`Error retrieving posts: ${error}`);
+    throw error;
   }
+}
 
   @Query(() => [Post])
-  async postsFromUser(
-    @Arg("userId", () => Int) userId: number
-  ): Promise<Post[]> {
-    const replacements: any[] = [userId];
+async postsFromUser(
+  @Arg("userId", () => Int) userId: number
+): Promise<Post[]> {
+  const replacements: any[] = [userId];
 
+  try {
     const query = `
       select p.*
       from post p
@@ -207,8 +195,13 @@ export class PostResolver {
 
     const posts = await getConnection().query(query, replacements);
 
+    logger.info(`Retrieved posts for user id: ${userId}`);
     return posts;
+  } catch (error) {
+    logger.error(`Error retrieving posts for user id: ${userId}, error: ${error}`);
+    throw error;
   }
+}
 
   @Query(() => Post, { nullable: true })
   post(@Arg("id", () => Int) id: number): Promise<Post | undefined> {
@@ -221,26 +214,35 @@ export class PostResolver {
     @Arg("input") input: PostInput,
     @Ctx() { req }: MyContext
   ): Promise<Post> {
-    return Post.create({
-      ...input,
-      creatorId: req.session.userId,
-    }).save();
+    try {
+      const post = await Post.create({
+        ...input,
+        creatorId: req.session.userId,
+      }).save();
+
+      logger.info(`Post created with id: ${post.id}`);
+      return post;
+    } catch (error) {
+      logger.error(`Error creating post: ${error}`);
+      throw error;
+    }
   }
 
   @Mutation(() => Post, { nullable: true })
-  @UseMiddleware(isAuth)
-  async updatePost(
-    @Arg("id", () => Int) id: number,
-    @Arg("title") title: string,
-    @Arg("imgUrl", () => String, { nullable: true }) imgUrl: string | null,
-    @Arg("text") text: string,
-    @Ctx() { req }: MyContext
-  ): Promise<Post | null> {
-    let updatedPost: any = { title, text };
-    if (imgUrl) {
-      updatedPost["imgUrl"] = imgUrl;
-    }
-    const result = (await getConnection()
+@UseMiddleware(isAuth)
+async updatePost(
+  @Arg("id", () => Int) id: number,
+  @Arg("title") title: string,
+  @Arg("imgUrl", () => String, { nullable: true }) imgUrl: string | null,
+  @Arg("text") text: string,
+  @Ctx() { req }: MyContext
+): Promise<Post | null> {
+  let updatedPost: any = { title, text };
+  if (imgUrl) {
+    updatedPost["imgUrl"] = imgUrl;
+  }
+  try {
+    const result = await getConnection()
       .createQueryBuilder()
       .update(Post)
       .set(updatedPost)
@@ -249,9 +251,15 @@ export class PostResolver {
         creatorId: req.session.userId,
       })
       .returning("*")
-      .execute()) as any;
+      .execute();
+
+    logger.info(`Post updated with id: ${id} by user: ${req.session.userId}`);
     return result.raw[0];
+  } catch (error) {
+    logger.error(`Error updating post with id: ${id}, error: ${error}`);
+    throw error;
   }
+}
 
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
@@ -259,17 +267,13 @@ export class PostResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    // not cascade way
-    // const post = await Post.findOne(id);
-    // if (!post) {
-    //   return false;
-    // }
-    // if (post?.creatorId !== req.session.userId) {
-    //   throw new Error("not authorized");
-    // }
-    // await Updoot.delete({ postId: id });
-    // await Post.delete({ id });
-    await Post.delete({ id, creatorId: req.session.userId });
-    return true;
+    try {
+      await Post.delete({ id, creatorId: req.session.userId });
+      logger.info(`Post deleted with id: ${id}`);
+      return true;
+    } catch (error) {
+      logger.error(`Error deleting post: ${error}`);
+      return false;
+    }
   }
 }

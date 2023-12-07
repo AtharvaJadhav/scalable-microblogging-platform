@@ -1,5 +1,5 @@
 import "../firebaseConfig";
-import { Button, Box, Link, Flex } from "@chakra-ui/react";
+import { Button, Box, Link, Flex, useToast, Image } from "@chakra-ui/react";
 import React from "react";
 import { Form, Formik } from "formik";
 import { Wrapper } from "../components/Wrapper";
@@ -18,6 +18,7 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 export const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
   const [login ] = useLoginMutation();
+  const toast = useToast();
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -30,10 +31,20 @@ export const Login: React.FC<{}> = ({}) => {
       const response = await login({ variables: { googleToken: token } });
       if (response.data?.login.errors) {
         // Handle errors
+        const errorMessage = response.data.login.errors
+          .map((err) => err.message)
+          .join(", ");
+        toast({
+          title: "Registration Error",
+          description: errorMessage,
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+          position: "top",
+        });
         console.log(response.data?.login.errors);
       } else {
         // User logged in successfully
-
         router.push("/");
         setTimeout(() => {
           router.reload();
@@ -46,7 +57,7 @@ export const Login: React.FC<{}> = ({}) => {
   };
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Login | Ekko</title>
       </Head>
@@ -59,7 +70,6 @@ export const Login: React.FC<{}> = ({}) => {
               twoFactorToken: "",
             }}
             onSubmit={async (values, { setErrors }) => {
-              console.log(Date.now());
               const response = await login({
                 variables: {
                   usernameOrEmail: values.usernameOrEmail,
@@ -151,7 +161,7 @@ export const Login: React.FC<{}> = ({}) => {
           </Formik>
         </Flex>
       </Wrapper>
-    </Layout>
+    </>
   );
 };
 

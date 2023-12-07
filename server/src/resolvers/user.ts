@@ -22,6 +22,7 @@ import * as speakeasy from "speakeasy";
 import * as QRCode from "qrcode";
 import { GoogleRegisterInput } from "./GoogleRegisterInput";
 import { verifyGoogleToken } from "../util/verifyGoogleToken";
+import logger from '../logger';
 
 @ObjectType()
 class FieldError {
@@ -167,6 +168,7 @@ export class UserResolver {
   ): Promise<UserResponse> {
     const errors = validateRegister(options);
     if (errors) {
+      logger.warn(`Registration failed due to validation errors: ${JSON.stringify(errors)}`);
       return { errors };
     }
 
@@ -187,10 +189,12 @@ export class UserResolver {
         .returning("*")
         .execute();
       user = result.raw[0];
+      logger.info(`New user registered: ${user.username}`);
     } catch (err) {
       //|| err.detail.includes("already exists")) {
       // duplicate username error
       if (err.code === "23505") {
+        logger.error(`Registration failed: Username ${options.username} already taken`);
         return {
           errors: [
             {
@@ -200,6 +204,7 @@ export class UserResolver {
           ],
         };
       }
+      logger.error(`Registration failed: ${err}`);
     }
 
     // store user id session
@@ -242,6 +247,7 @@ export class UserResolver {
     }
 
     req.session.userId = user.id;
+    logger.info(`User logged in with Google: ${user.email}`);
     return { user };
   }
 
@@ -342,11 +348,13 @@ export class UserResolver {
 
     req.session.userId = user.id;
 
+    logger.info(`User logged in: ${user.username}`);
     return {
       user,
     };
   }
 
+  logger.warn("Invalid login request");
     return {
       errors: [
         {
@@ -363,11 +371,12 @@ export class UserResolver {
       req.session.destroy((err) => {
         res.clearCookie(COOKIE_NAME);
         if (err) {
-          console.log(err);
+          logger.error(`Logout error: ${err}`);
           resolve(false);
           return;
         }
 
+        logger.info('User logged out successfully');
         resolve(true);
       })
     );
@@ -391,6 +400,8 @@ export class UserResolver {
     }
 
     user.twoFactorAuthSecret = secret.base32;
+    console.log(user.isTwoFactorEnabled)
+    console.log("In Setup 2 Factor Auth")
     user.isTwoFactorEnabled = true;
     await user.save();
 
@@ -424,7 +435,7 @@ export class UserResolver {
   ): Promise<UserResponse> {
     const googleUser = await verifyGoogleToken(options.token);
     if (!googleUser) {
-      console.log("1")
+      logger.warn("Invalid Google token provided for registration");
       return {
         errors: [{ field: "token", message: "Invalid Google token" }],
       };
@@ -432,7 +443,7 @@ export class UserResolver {
 
     const user = await User.findOne({ where: { email: options.email } });
     if (user) {
-      console.log("2")
+      logger.warn(`Registration attempt with existing email: ${options.email}`);
       // User already exists, return an error
       return {
         errors: [
@@ -457,6 +468,7 @@ export class UserResolver {
     // Set user session
     req.session.userId = newUser.id;
 
+    logger.info(`New Google user registered: ${newUser.username}`);
     return { user: newUser };
   }
 }

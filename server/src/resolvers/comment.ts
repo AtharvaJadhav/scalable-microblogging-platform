@@ -14,6 +14,7 @@ import {
 import { getConnection } from "typeorm";
 import { Comment } from "../entities/Comment";
 import isAuth from "../middleware/isAuth";
+import logger from '../logger';
 
 @Resolver(Comment)
 export class CommentResolver {
@@ -29,26 +30,41 @@ export class CommentResolver {
     @Arg("relatedPostId") relatedPostId: number,
     @Ctx() { req }: MyContext
   ): Promise<Comment> {
-    return Comment.create({
-      text: text,
-      relatedPostId: relatedPostId,
-      creatorId: req.session.userId,
-    }).save();
+    try {
+      const comment = await Comment.create({
+        text: text,
+        relatedPostId: relatedPostId,
+        creatorId: req.session.userId,
+      }).save();
+
+      logger.info(`Comment created with id: ${comment.id}`);
+      return comment;
+    } catch (error) {
+      logger.error(`Error creating comment: ${error}`);
+      throw error;
+    }
   }
 
   @Query(() => [Comment])
   async comments(
     @Arg("relatedPostId") relatedPostId: number
   ): Promise<Comment[]> {
-    const replacements: number[] = [relatedPostId];
-    const query = `
-        select c.*
-        from comment c
-        where c."relatedPostId" = $1
-        order by c."createdAt" DESC
-      `;
-    const comments = await getConnection().query(query, replacements);
-    return comments;
+    try {
+      const replacements: number[] = [relatedPostId];
+      const query = `
+          select c.*
+          from comment c
+          where c."relatedPostId" = $1
+          order by c."createdAt" DESC
+        `;
+      const comments = await getConnection().query(query, replacements);
+
+      logger.info(`Retrieved comments for post id: ${relatedPostId}`);
+      return comments;
+    } catch (error) {
+      logger.error(`Error retrieving comments: ${error}`);
+      throw error;
+    }
   }
 
   @Mutation(() => Boolean)
@@ -57,7 +73,13 @@ export class CommentResolver {
     @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
-    await Comment.delete({ id, creatorId: req.session.userId });
-    return true;
+    try {
+      await Comment.delete({ id, creatorId: req.session.userId });
+      logger.info(`Comment deleted with id: ${id}`);
+      return true;
+    } catch (error) {
+      logger.error(`Error deleting comment: ${error}`);
+      return false;
+    }
   }
 }

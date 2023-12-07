@@ -15,15 +15,20 @@ import {
   Button,
   Flex,
   Center,
+  useToast
 } from "@chakra-ui/react";
+import { useIsAuth } from "../util/useIsAuth";
+
 
 const TwoFactorSetup = () => {
+  useIsAuth()
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [setupTwoFactorAuth] = useSetupTwoFactorAuthMutation();
   const [verifyTwoFactorToken] = useVerifyTwoFactorTokenMutation();
   const { data: meData } = useMeQuery(); // Fetch current user data
   const router = useRouter();
+  const toast = useToast();
 
   useEffect(() => {
     if (!meData?.me?.isTwoFactorEnabled) {
@@ -52,6 +57,15 @@ const TwoFactorSetup = () => {
       } else {
         // Handle error (code is incorrect)
         console.log("Incorrect 2FA code");
+        toast({
+          title: "Error",
+          description: "Incorrect 2FA code",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top",
+        });
+
       }
     } catch (error) {
       console.error("Error verifying 2FA code", error);
