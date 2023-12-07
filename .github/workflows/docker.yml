@@ -19,8 +19,8 @@ jobs:
         image: purvil1699/backend-image
         tags: latest
         registry: docker.io
-        dockerfile: Dockerfile  # Dockerfile is located at the root of the context
-        context: ./server
+        dockerfile: ./server/Dockerfile
+        directory: ./server  # Use 'directory' instead of 'context'
         username: purvil1699
         password: D@mkp@1699
 
