@@ -10,7 +10,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
 
   redis:
     image: redis:latest
@@ -18,6 +18,19 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/lireddit_cees"
+      REDIS_URL: "redis:6379"
+    depends_on:
+      - db
+      - redis
 
 volumes:
   db_data:
