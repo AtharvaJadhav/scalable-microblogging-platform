@@ -72,7 +72,7 @@ export const Register: React.FC<registerProps> = ({}) => {
   };
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Register | Ekko</title>
       </Head>
@@ -94,6 +94,7 @@ export const Register: React.FC<registerProps> = ({}) => {
                 },
               });
               if (response.data?.register.errors) {
+                console.log("11")
                 setErrors(toErrorMap(response.data.register.errors));
               } else if (response.data?.register.user) {
                 // worked
@@ -139,7 +140,6 @@ export const Register: React.FC<registerProps> = ({}) => {
                     mt={4}
                     type="submit"
                     colorScheme="teal"
-                    isLoading={isSubmitting}
                   >
                     Register
                   </Button>
@@ -148,7 +148,6 @@ export const Register: React.FC<registerProps> = ({}) => {
                     ml={2}
                     colorScheme="blue"
                     onClick={handleGoogleSignUp}
-                    isLoading={isSubmitting}
                   >
                     Register with Google
                   </Button>
@@ -158,7 +157,7 @@ export const Register: React.FC<registerProps> = ({}) => {
           </Formik>
         </Flex>
       </Wrapper>
-    </Layout>
+    </>
   );
 };
 

@@ -21,6 +21,7 @@ import { Updoot } from "./entities/Updoot";
 import { createUserLoader } from "./util/createUserLoader";
 import { createUpdootLoader } from "./util/createUpdootLoader";
 import { CommentResolver } from "./resolvers/comment";
+import logger from './logger';
 
 const main = async () => {
   const conn = await createConnection({
@@ -89,10 +90,12 @@ const main = async () => {
   });
 
   app.listen(parseInt(process.env.PORT!), () => {
+    logger.info(`Server started on localhost:${process.env.PORT}`);
     console.log(`server started on localhost:${process.env.PORT}`);
   });
 };
 
 main().catch((err) => {
   console.error(err);
+  logger.error(`Server failed to start: ${err}`);
 });
