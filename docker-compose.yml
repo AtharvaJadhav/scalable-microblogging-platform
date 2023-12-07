@@ -2,20 +2,49 @@ version: '3.8'
 
 services:
   db:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: lireddit_cees
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   redis:
-    image: redis:latest  # Use the Redis image from Docker Hub
+    image: redis:latest
     ports:
-      - "6379:6379"  # Map the default Redis port on the container to the host
+      - "6379:6379"
     volumes:
-      - redis_data:/data 
+      - redis_data:/data
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/lireddit_cees"
+      REDIS_URL: "redis:6379"
+      PORT: "4000"
+      SESSION_SECRET: "asdasdasd"
+      CORS_ORIGIN: "http://localhost:3000"  # Adjust if needed for production
+    depends_on:
+      - db
+      - redis
+  
+  frontend:
+    build:
+      context: .
+      dockerfile: ./web/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:4000/graphql  # Adjust for Docker internal network if needed
+    depends_on:
+      - backend
 
 volumes:
   db_data:

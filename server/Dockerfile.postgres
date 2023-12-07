@@ -1,8 +1,0 @@
-# Use an official PostgreSQL image as a parent image
-FROM postgres:latest
-
-# Set environment variables for PostgreSQL
-ENV POSTGRES_DB=lireddit_cees
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=postgres
-
