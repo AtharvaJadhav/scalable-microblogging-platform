@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, Link, Flex, Button, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Link,
+  Flex,
+  Button,
+  Heading,
+  Image as Im,
+} from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../util/isServer";
@@ -25,9 +32,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         <NextLink href="/login">
           <Link mr={4}>
             <Button>Login</Button>
-
-            </Link>
-          
+          </Link>
         </NextLink>
         <NextLink href="/register">
           <Link mr={4}>
@@ -42,15 +47,11 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     body = (
       <Flex align="center">
         <NextLink href="/create-post" as={`/create-post`}>
-          <Button mr={4}>
-            Create Post
-          </Button>
+          <Button mr={4}>Create Post</Button>
         </NextLink>
         <Box mr={2}>
           <NextLink href="/user/[id]" as={`/user/${data.me.id}`}>
-            <Button>
-              {data.me.username}
-            </Button>
+            <Button>{data.me.username}</Button>
           </NextLink>
         </Box>
         <Box mr={2}>
@@ -71,18 +72,19 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     );
   }
   return (
-    <Flex
-      zIndex={1}
-      position="sticky"
-      top={0}
-      bg="blue"
-      py={4}
-      align="center"
-    >
+    <Flex zIndex={1} position="sticky" top={0} bg="teal" py={4} align="center">
       <Flex maxW={1500} align="center" flex={1} px={4} m="auto">
         <NextLink href="/">
           <Link>
-            <Heading>Ekko</Heading>
+            <Flex align="center">
+              <Im
+                src="/ekkologo.png"
+                alt="Ekko"
+                boxSize="50px"
+                mr={2}
+              />
+              <Heading>Ekko</Heading>
+            </Flex>
           </Link>
         </NextLink>
         <Box ml="auto">{body}</Box>

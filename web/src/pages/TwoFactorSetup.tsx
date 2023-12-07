@@ -6,6 +6,16 @@ import {
   useMeQuery,
 } from "../generated/graphql";
 import { withApollo } from "../util/withApollo";
+import {
+  Box,
+  Heading,
+  Text,
+  Image,
+  Input,
+  Button,
+  Flex,
+  Center,
+} from "@chakra-ui/react";
 
 const TwoFactorSetup = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
@@ -49,33 +59,42 @@ const TwoFactorSetup = () => {
   };
 
   return (
-    <div>
-      <h1>Two-Factor Authentication</h1>
-      {!meData?.me?.isTwoFactorEnabled && qrCodeUrl && (
-        <div>
-          <p>Scan this QR code with your Google Authenticator app:</p>
-          <img src={qrCodeUrl} alt="Two-Factor Authentication QR Code" />
-          {/* <input
+    <Flex align="center" justify="center" h="100vh">
+      <Box maxW="md" p={8} borderWidth={1} borderRadius="md" boxShadow="lg">
+        <Heading as="h1" size="xl" mb={4}>
+          Two-Factor Authentication
+        </Heading>
+
+        {!meData?.me?.isTwoFactorEnabled && qrCodeUrl && (
+          <Center mb={4}>
+            <Box>
+              <Text mb={2}>
+                Scan this QR code with your Google Authenticator app:
+              </Text>
+              <Image src={qrCodeUrl} alt="Two-Factor Authentication QR Code" />
+            </Box>
+          </Center>
+        )}
+
+        <Box>
+          <Input
             type="text"
             value={twoFactorCode}
             onChange={(e) => setTwoFactorCode(e.target.value)}
             placeholder="Enter 2FA code"
+            mb={2}
           />
-          <button onClick={handleVerifyCode}>Verify Code</button> */}
-        </div>
-        //   ) : (
-        //     <p>Loading...</p>
-      )}
-      <div>
-        <input
-          type="text"
-          value={twoFactorCode}
-          onChange={(e) => setTwoFactorCode(e.target.value)}
-          placeholder="Enter 2FA code"
-        />
-        <button onClick={handleVerifyCode}>Verify Code</button>
-      </div>
-    </div>
+          <Button
+            onClick={handleVerifyCode}
+            colorScheme="teal"
+            variant="solid"
+            _hover={{ bg: "teal.500" }}
+          >
+            Verify Code
+          </Button>
+        </Box>
+      </Box>
+    </Flex>
   );
 };
 
