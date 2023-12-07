@@ -1,22 +1,44 @@
 version: '3.8'
 
 services:
-  db:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.postgres
-    volumes:
-      - db_data:/var/lib/postgresql/data
+  web:
+    build: ./web
     ports:
-      - "5432:5432"
+      - "4000:4000" # Change ports as necessary
+    networks:
+      - app-network
+
+  server:
+    build: ./server
+    ports:
+      - "3000:3000" # Change ports as necessary
+    networks:
+      - app-network
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=lireddit_cees
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   redis:
     image: redis:latest  # Use the Redis image from Docker Hub
     ports:
       - "6379:6379"  # Map the default Redis port on the container to the host
     volumes:
-      - redis_data:/data 
+      - redis-data:/data 
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-  db_data:
-  redis_data:
+  db-data:
+  redis-data:
