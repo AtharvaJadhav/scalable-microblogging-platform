@@ -134,7 +134,9 @@ export class UserResolver {
 
     await sendEmail(
       email,
-      `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
+      `<p>Please click on this <a href="http://localhost:3000/change-password/${token}">reset password</a> link to reset your password</p>
+      <p> -Team Ekko</p>`,
+      "Reset your password"
     );
 
     return true;
@@ -206,6 +208,14 @@ export class UserResolver {
     // this will set a cookie on the user
     // keep them logged in
     req.session.userId = user.id;
+
+    await sendEmail(
+      options.email,
+      `<h1>Welcome To Ekko</h1>
+      <p>Thank you for registering with EKKO! Your registration has been successfully completed. We're excited to have you on board!</p>
+      <p>-Team Ekko</p>`,
+      "Welcome to Ekko"
+    );
 
     return { user };
   }

@@ -63,7 +63,7 @@ export const Register: React.FC<registerProps> = ({}) => {
         router.push("/");
         setTimeout(() => {
           router.reload();
-        }, 10);
+        }, 200);
       }
     } catch (error) {
       // Handle Errors here

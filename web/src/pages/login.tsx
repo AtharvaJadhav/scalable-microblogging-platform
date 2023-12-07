@@ -37,7 +37,7 @@ export const Login: React.FC<{}> = ({}) => {
         router.push("/");
         setTimeout(() => {
           router.reload();
-        }, 10);
+        }, 200);
       }
     } catch (error) {
       // Handle Errors here
