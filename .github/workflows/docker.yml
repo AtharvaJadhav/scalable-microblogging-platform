@@ -2,9 +2,9 @@ name: CI/CD Pipeline with Docker Image Build
 
 on:
   push:
-    branches: [ docker-postgres ]
+    branches: [ main_CICD ]
   pull_request:
-    branches: [ docker-postgres ]
+    branches: [ main_CICD ]
 
 jobs:
   build-and-push-backend:
