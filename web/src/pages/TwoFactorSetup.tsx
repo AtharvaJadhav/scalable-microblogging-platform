@@ -19,9 +19,8 @@ import {
 } from "@chakra-ui/react";
 import { useIsAuth } from "../util/useIsAuth";
 
-
 const TwoFactorSetup = () => {
-  useIsAuth()
+  useIsAuth();
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [twoFactorCode, setTwoFactorCode] = useState("");
   const [setupTwoFactorAuth] = useSetupTwoFactorAuthMutation();
