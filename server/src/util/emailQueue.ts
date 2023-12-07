@@ -32,14 +32,14 @@ async function sendEmailJob(to: string, html: string, subject: string) {
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'sangramjagtap099@gmail.com', // Your Gmail address
-        pass: 'dzinvkjjxssksbqs'      // Your App Password
+        user: process.env.EMAIL_ID, // Your Gmail address
+        pass: process.env.EMAIL_PASSWORD      // Your App Password
     }
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Team Ekko 👻" <ekko@example.com>', // sender address
+    from: '"Team Ekko " <ekko@example.com>', // sender address
     to: to, // list of receivers
     subject: subject, // Subject line
     html: html,
@@ -54,7 +54,7 @@ emailQueue.process(
   async (job: Queue.Job<EmailJobData>, done: Queue.DoneCallback) => {
     try {
       await sendEmailJob(job.data.to, job.data.html , job.data.subject);
-      console.log("Email sent!!!!!!!");
+      console.log("Email sent!!");
       done();
     } catch (error) {
       console.error(error);
