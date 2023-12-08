@@ -23,6 +23,7 @@ jobs:
           password: D@mkp@1699
 
   server-build-and-test:
+    needs: build-and-push-docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
