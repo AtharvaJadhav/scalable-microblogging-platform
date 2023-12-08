@@ -7,23 +7,7 @@ on:
     branches: [ main_CICD, main ]
 
 jobs:
-  build-and-push-docker:
-    runs-on: ubuntu-latest
-    # needs: build-and-push-backend
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build and Push Frontend Docker Image
-        uses: mr-smithers-excellent/docker-build-push@v6
-        with:
-          image: purvil1699/docker-image
-          tags: latest
-          registry: docker.io
-          dockerfile: ./web/Dockerfile
-          username: purvil1699
-          password: D@mkp@1699
-
   server-build-and-test:
-    needs: build-and-push-docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -47,3 +31,19 @@ jobs:
       - name: Install web dependencies
         run: npm install
         working-directory: ./web
+    
+    build-and-push-docker:
+      needs: web-build-and-test
+      runs-on: ubuntu-latest
+      # needs: build-and-push-backend
+      steps:
+        - uses: actions/checkout@v2
+        - name: Build and Push Frontend Docker Image
+          uses: mr-smithers-excellent/docker-build-push@v6
+          with:
+            image: purvil1699/docker-image
+            tags: latest
+            registry: docker.io
+            dockerfile: ./web/Dockerfile
+            username: purvil1699
+            password: D@mkp@1699
