@@ -10,6 +10,7 @@ interface PostFormComponentProps {
   values: PostInput;
   buttonText: "Create post" | "Update post";
   urlCallbackParent: (url: string) => void;
+  errorMessage?: string | null;
 }
 
 export const PostFormComponent: React.FC<PostFormComponentProps> = ({
@@ -17,6 +18,7 @@ export const PostFormComponent: React.FC<PostFormComponentProps> = ({
   values,
   buttonText,
   urlCallbackParent,
+  errorMessage,
 }) => {
   const [url, setUrl] = useState<string>("");
   const urlCallback = (url: string) => {
@@ -35,6 +37,11 @@ export const PostFormComponent: React.FC<PostFormComponentProps> = ({
       <Box mt={4}>
         <InputField textarea name="text" placeholder="text..." label="Body" />
       </Box>
+      {errorMessage && (
+        <Box color="red.500" mt={3}>
+          {errorMessage}
+        </Box>
+      )}
       <Button
         mt={4}
         type="submit"
