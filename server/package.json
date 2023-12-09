@@ -51,6 +51,7 @@
     "graphql": "^15.5.1",
     "ioredis": "^4.27.6",
     "nodemailer": "^6.6.3",
+    "openai": "^4.20.1",
     "pg": "^8.6.0",
     "qrcode": "^1.5.3",
     "reflect-metadata": "^0.1.13",

@@ -15,6 +15,7 @@ import { getConnection } from "typeorm";
 import { Comment } from "../entities/Comment";
 import isAuth from "../middleware/isAuth";
 import logger from '../logger';
+import { moderateContent } from './openaiClient';
 
 @Resolver(Comment)
 export class CommentResolver {
@@ -31,6 +32,12 @@ export class CommentResolver {
     @Ctx() { req }: MyContext
   ): Promise<Comment> {
     try {
+
+      const isContentSafe = await moderateContent(text);
+    if (!isContentSafe) {
+      throw new Error("Comment contains inappropriate content.");
+    }
+
       const comment = await Comment.create({
         text: text,
         relatedPostId: relatedPostId,

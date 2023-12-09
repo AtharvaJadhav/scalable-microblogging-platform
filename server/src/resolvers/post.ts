@@ -19,6 +19,7 @@ import { getConnection } from "typeorm";
 import { Updoot } from "../entities/Updoot";
 import { User } from "../entities/User";
 import logger from '../logger';
+import { moderateContent } from './openaiClient';
 
 @InputType()
 class PostInput {
@@ -215,6 +216,13 @@ async postsFromUser(
     @Ctx() { req }: MyContext
   ): Promise<Post> {
     try {
+
+      // Content moderation
+    const isContentSafe = await moderateContent(input.text);
+    if (!isContentSafe) {
+      throw new Error("Post contains inappropriate content.");
+    }
+
       const post = await Post.create({
         ...input,
         creatorId: req.session.userId,
