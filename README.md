@@ -11,7 +11,7 @@ This semester project involves the development of a scalable microblogging platf
 
 ### Technical Specifications
 - **APIs**: Powered by OpenAPI spec-based REST APIs. Microservices architecture has been implemented.
-- **Single Sign-On (SSO)**: Implemented using Keycloak, supporting federated sign-up (e.g., Google, Facebook, Apple).
+- **Single Sign-On (SSO)**: Implemented using Firebase, supporting federated sign-up (e.g., Google ).
 - **Two-Factor Authentication**: Enabled through Keycloak or similar systems.
 - **CI/CD Workflow**: Robust CI/CD practices for streamlined development and deployment.
 - **Repository**: All code is managed in this repository.
