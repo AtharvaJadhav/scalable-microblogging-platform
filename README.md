@@ -7,7 +7,8 @@ This semester project involves the development of a scalable microblogging platf
 ## Official Features Implemented
 1. **User Management**: Includes user sign-ups, sign-in, and password recovery workflows.
 2. **Content Posting**: Allows posting, editing, and deleting of long posts with image support.
-3. **Feed View**: Displays posts from users in chronological order or top sorted order.
+3. **Feed View**: Displays posts from users in chronological order or top sorted order.        
+4. **Content Moderation**: Prohibits users from posting inappropriate or spam content.         
 
 ## Technologies
 Our platform leverages a variety of cutting-edge technologies:
